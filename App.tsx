@@ -8,7 +8,8 @@ import type { ImageState } from './types';
 
 function App() {
   const [personImage, setPersonImage] = useState<ImageState | null>(null);
-  const [clothingImage, setClothingImage] = useState<ImageState | null>(null);
+  const [topImage, setTopImage] = useState<ImageState | null>(null);
+  const [bottomImage, setBottomImage] = useState<ImageState | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,19 +44,29 @@ function App() {
     }
   }, []);
 
-  const handleClothingImageChange = useCallback(async (file: File) => {
+  const handleTopImageChange = useCallback(async (file: File) => {
     try {
       const imageState = await fileToImageState(file);
-      setClothingImage(imageState);
+      setTopImage(imageState);
     } catch (err) {
-      setError('Error processing clothing image.');
+      setError('Error processing top image.');
+      console.error(err);
+    }
+  }, []);
+  
+  const handleBottomImageChange = useCallback(async (file: File) => {
+    try {
+      const imageState = await fileToImageState(file);
+      setBottomImage(imageState);
+    } catch (err) {
+      setError('Error processing bottom image.');
       console.error(err);
     }
   }, []);
 
   const handleTryOn = useCallback(async () => {
-    if (!personImage || !clothingImage) {
-      setError('Please upload both a person and a clothing item.');
+    if (!personImage || !topImage || !bottomImage) {
+      setError('Please upload a person, a top, and a bottom item.');
       return;
     }
 
@@ -65,10 +76,9 @@ function App() {
 
     try {
       const resultBase64 = await generateFashionImage(
-        personImage.base64,
-        personImage.mimeType,
-        clothingImage.base64,
-        clothingImage.mimeType
+        personImage,
+        topImage,
+        bottomImage
       );
       setGeneratedImage(`data:image/png;base64,${resultBase64}`);
     } catch (err) {
@@ -78,14 +88,14 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [personImage, clothingImage]);
+  }, [personImage, topImage, bottomImage]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-6xl mx-auto">
         <Header />
         <main className="mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ImageUploader
               id="person-uploader"
               label="1. 인물 사진 업로드"
@@ -93,20 +103,26 @@ function App() {
               preview={personImage?.preview}
             />
             <ImageUploader
-              id="clothing-uploader"
-              label="2. 의상 사진 업로드"
-              onImageChange={handleClothingImageChange}
-              preview={clothingImage?.preview}
+              id="top-uploader"
+              label="2. 상의 사진 업로드"
+              onImageChange={handleTopImageChange}
+              preview={topImage?.preview}
+            />
+            <ImageUploader
+              id="bottom-uploader"
+              label="3. 하의 사진 업로드"
+              onImageChange={handleBottomImageChange}
+              preview={bottomImage?.preview}
             />
           </div>
 
           <div className="mt-8 text-center">
             <button
               onClick={handleTryOn}
-              disabled={!personImage || !clothingImage || isLoading}
+              disabled={!personImage || !topImage || !bottomImage || isLoading}
               className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500"
             >
-              {isLoading ? 'AI 스타일링 중...' : '3. 가상 피팅 시작'}
+              {isLoading ? 'AI 스타일링 중...' : '4. 가상 피팅 시작'}
             </button>
           </div>
 

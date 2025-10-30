@@ -1,5 +1,6 @@
 
 import { GoogleGenAI, Modality } from "@google/genai";
+import type { ImageState } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
@@ -10,10 +11,9 @@ if (!API_KEY) {
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export async function generateFashionImage(
-  personImageBase64: string,
-  personImageMimeType: string,
-  clothingImageBase64: string,
-  clothingImageMimeType: string
+  personImage: ImageState,
+  topImage: ImageState,
+  bottomImage: ImageState
 ): Promise<string> {
   try {
     const response = await ai.models.generateContent({
@@ -22,18 +22,24 @@ export async function generateFashionImage(
         parts: [
           {
             inlineData: {
-              data: personImageBase64,
-              mimeType: personImageMimeType,
+              data: personImage.base64,
+              mimeType: personImage.mimeType,
             },
           },
           {
             inlineData: {
-              data: clothingImageBase64,
-              mimeType: clothingImageMimeType,
+              data: topImage.base64,
+              mimeType: topImage.mimeType,
             },
           },
           {
-            text: '첫 번째 이미지의 인물에게 두 번째 이미지의 옷을 자연스럽게 입혀주세요. 원본 인물의 얼굴과 배경은 최대한 유지해주세요.',
+            inlineData: {
+              data: bottomImage.base64,
+              mimeType: bottomImage.mimeType,
+            },
+          },
+          {
+            text: '첫 번째 이미지의 인물에게 두 번째 이미지의 상의와 세 번째 이미지의 하의를 자연스럽게 입혀주세요. 원본 인물의 얼굴과 배경은 최대한 유지해주세요.',
           },
         ],
       },
