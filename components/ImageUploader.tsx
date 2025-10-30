@@ -1,4 +1,3 @@
-
 import React, { useCallback } from 'react';
 
 interface ImageUploaderProps {
@@ -41,7 +40,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ id, label, onImage
       <h2 className="text-xl font-semibold text-gray-300 mb-4">{label}</h2>
       <label
         htmlFor={id}
-        className="w-full h-80 flex flex-col items-center justify-center bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:bg-gray-700 hover:border-gray-500 transition-colors duration-300"
+        className="w-full h-64 flex flex-col items-center justify-center bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:bg-gray-700 hover:border-gray-500 transition-colors duration-300"
       >
         {preview ? (
           <img src={preview} alt="Preview" className="w-full h-full object-contain rounded-lg" />

@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface ResultDisplayProps {
@@ -17,7 +16,7 @@ const LoadingSpinner = () => (
 
 export const ResultDisplay: React.FC<ResultDisplayProps> = ({ isLoading, generatedImage, error }) => {
   return (
-    <div className="mt-12 w-full flex flex-col items-center justify-center min-h-[400px] bg-gray-800 rounded-lg p-4 border border-gray-700">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 rounded-lg p-4 border border-gray-700">
       {isLoading && <LoadingSpinner />}
       {error && !isLoading && (
         <div className="text-center text-red-400">

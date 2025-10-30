@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Header } from './components/Header';
 import { ImageUploader } from './components/ImageUploader';
@@ -92,10 +91,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-6xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto flex flex-col h-full">
         <Header />
-        <main className="mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <main className="mt-8 flex-grow grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Left Sidebar */}
+          <div className="md:col-span-1 flex flex-col gap-6">
             <ImageUploader
               id="person-uploader"
               label="1. 인물 사진 업로드"
@@ -114,23 +114,25 @@ function App() {
               onImageChange={handleBottomImageChange}
               preview={bottomImage?.preview}
             />
+            <div className="mt-4">
+              <button
+                onClick={handleTryOn}
+                disabled={!personImage || !topImage || !bottomImage || isLoading}
+                className="w-full px-8 py-4 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500"
+              >
+                {isLoading ? 'AI 스타일링 중...' : '4. 가상 피팅 시작'}
+              </button>
+            </div>
           </div>
-
-          <div className="mt-8 text-center">
-            <button
-              onClick={handleTryOn}
-              disabled={!personImage || !topImage || !bottomImage || isLoading}
-              className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500"
-            >
-              {isLoading ? 'AI 스타일링 중...' : '4. 가상 피팅 시작'}
-            </button>
+          
+          {/* Right Content Area */}
+          <div className="md:col-span-2">
+            <ResultDisplay
+              isLoading={isLoading}
+              generatedImage={generatedImage}
+              error={error}
+            />
           </div>
-
-          <ResultDisplay
-            isLoading={isLoading}
-            generatedImage={generatedImage}
-            error={error}
-          />
         </main>
       </div>
     </div>
